@@ -1,4 +1,4 @@
-import cloudinary from "cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 import { Product } from "../models/product.model.js";
 import { Order } from "../models/order.model.js";
 import { User } from "../models/user.model.js";
@@ -16,7 +16,7 @@ export const createProduct = async (req, res) => {
             });
         }
 
-        if(!req.files || req.files,length === 0){
+        if(!req.files || req.files.length === 0){
             return res.status(400).json({
                 success: false,
                 message: "At least one image is required"
@@ -41,7 +41,7 @@ export const createProduct = async (req, res) => {
         // secure url
         const imageUrls = uploadImages.map((image) => image.secure_url);
 
-        const product = new Product.create({
+        const product = await Product.create({
             name,
             description,
             price: parseFloat(price),
@@ -49,8 +49,6 @@ export const createProduct = async (req, res) => {
             category,
             images: imageUrls
         });
-
-        await product.save();
 
         res.status(201).json({
             success: true,
@@ -68,7 +66,7 @@ export const createProduct = async (req, res) => {
 
 export const getAllProducts = async (_, res) => {
     try {
-        const products = (await Product.find()).toSorted({createdAt: -1});
+        const products = await Product.find().sort({createdAt: -1});
         res.status(200).json({
             success: true,
             products
@@ -102,7 +100,7 @@ export const updateProduct = async (req, res) => {
         if(description){
             product.description = description;
         }
-        if(price){
+        if(price !== undefined){
             product.price = parseFloat(price);
         }
         if(stock !== undefined){
@@ -124,8 +122,11 @@ export const updateProduct = async (req, res) => {
             const uploadPromises = req.files.map((file) => {
                 return cloudinary.uploader.upload(file.path, {
                     folder: "products"
-                })
-            })
+                });
+            });
+
+            const uploadedImages = await Promise.all(uploadPromises);
+            product.images = uploadedImages.map((image) => image.secure_url);
         }
 
         await product.save();
@@ -146,7 +147,7 @@ export const updateProduct = async (req, res) => {
 
 export const getAllOrders = async (_, res) => {
     try {
-        const orders = (await Order.find().populate("user", "name email").populate("orderItems.product")).toSorted({createdAt: -1});
+        const orders = (await Order.find().populate("user", "name email").populate("orderItems.product")).sort({createdAt: -1});
         res.status(200).json({
             success: true,
             message: "Orders fetched successfully",
