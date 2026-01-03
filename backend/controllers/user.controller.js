@@ -3,8 +3,14 @@ import { User } from "../models/user.model.js";
 export const addAddress = async (req, res) => {
     try {
         const { label, fullName, streetAddress, city, state, zipCode, phoneNumber, isDefault } = req.body;
-        
         const user = req.user;
+
+        if(!label || !fullName || !streetAddress || !city || !state || !zipCode || !phoneNumber){
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required"
+            });
+        }
 
         // if this is set as default, then unset all other address defaults
         if(isDefault) {
@@ -85,7 +91,7 @@ export const updateAddress = async (req, res) => {
         address.state = state || address.state;
         address.zipCode = zipCode || address.zipCode;
         address.phoneNumber = phoneNumber || address.phoneNumber;
-        address.isDefault = isDefault || address.isDefault;
+        address.isDefault = isDefault !== undefined ? isDefault : address.isDefault;
 
         await user.save();
 
@@ -131,14 +137,14 @@ export const addToWishlist = async (req, res) => {
         const user = req.user;
         
         // If the product is already in the wishlist
-        if(user.whistlist.includes(productId)) {
+        if(user.wishlist.includes(productId)) {
             return res.status(400).json({
                 success: false,
                 message: "Product already in wishlist"
             });
         }
 
-        user.whistlist.push(productId);
+        user.wishlist.push(productId);
         await user.save();
 
         res.status(200).json({
@@ -161,14 +167,14 @@ export const removeFromWishlist = async (req, res) => {
         const user = req.user;
 
         // If the product is not in wishlist
-        if(!user.whistlist.includes(productId)){
-            res.status(400).json({
+        if(!user.wishlist.includes(productId)){
+            return res.status(400).json({
                 success: false,
                 message: "Product not in wishlist"
             });
         }
 
-        user.whistlist.pull(productId);
+        user.wishlist.pull(productId);
         await user.save();
 
         res.status(200).json({
@@ -187,9 +193,10 @@ export const removeFromWishlist = async (req, res) => {
 
 export const getWishlist = async (req, res) => {
     try {
-        const user = req.user;
+        // We're using populate, because whishlist is just an array of product id's
+        const user = await User.findById(req.user._id).populate("wishlist");
 
-        res.stause(200).json({
+        res.status(200).json({
             success: true,
             message: "Wishlist fetched successfully",
             wishlist: user.wishlist
