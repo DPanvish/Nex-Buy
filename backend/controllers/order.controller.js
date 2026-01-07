@@ -1,5 +1,6 @@
 import { Product } from "../models/product.model.js";
 import { Order } from "../models/order.model.js";
+import { Review } from "../models/review.model.js";
 
 
 export const createOrder = async (req, res) => {
@@ -63,19 +64,21 @@ export const createOrder = async (req, res) => {
     }
 }
 
-export const getOrder = async (req, res) => {
+export const getUserOrders = async (req, res) => {
     try {
         const user = req.user;
         const orders = await Order.find({user: user._id}).populate("orderItems.product").sort({createdAt: -1});
 
+        const orderIds = orders.map((order) => order._id);
+        const reviews = await Review.find({orderId: {$in: orderIds}});
+        const reviewedOrderIds = new Set(reviews.map((review) => review.orderId.toString()));
+
         // check is each order has been reviewed
         const ordersWithReviewStatus = await Promise.all(
             orders.map(async (order) => {
-                const review = await Review.findOne({orderId: order._id});
-
                 return {
                     ...order.toObject(),
-                    hasReviewed: !!review
+                    hasReviewed: reviewedOrderIds.has(order._id.toString())
                 };
             })
         );
