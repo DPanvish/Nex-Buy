@@ -1,4 +1,4 @@
-import { Product } from "../models/product.model";
+import { Product } from "../models/product.model.js";
 
 export const getProductById = async (req, res) => {
     try {
@@ -11,6 +11,11 @@ export const getProductById = async (req, res) => {
                 message: "Product not found"
             });
         }
+
+        res.status(200).json({
+            success: true,
+            product
+        });
     }catch (error){
         console.error("Error in getProductById:", error);
         res.status(500).json({
