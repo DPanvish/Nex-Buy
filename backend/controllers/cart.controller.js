@@ -4,7 +4,7 @@ import { Product } from "../models/product.model.js";
 export const getCart = async (req, res) => {
     try {
         const user = req.user;
-        const cart = await Cart.findOne({clerkId: user.clerkId}).populate("items.product");
+        let cart = await Cart.findOne({clerkId: user.clerkId}).populate("items.product");
 
         if(!cart){
             cart = await Cart.create({
@@ -61,14 +61,14 @@ export const addToCart = async (req, res) => {
         // check if item is in the cart
         const existingItem = cart.items.find((item) => item.product.toString() === productId.toString());
         if(existingItem){
-            if(product.stock < existingItem.quantity + 1){
+            if(product.stock < existingItem.quantity + quantity){
                 return res.status(400).json({
                     success: false,
                     message: "Insufficient stock"
                 });
             }
 
-            existingItem.quantity += 1;
+            existingItem.quantity += quantity;
         }else{
             cart.items.push({
                 product: productId,
