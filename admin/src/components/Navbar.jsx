@@ -31,7 +31,7 @@ const Navbar = () => {
 
   return (
     <div className="navbar w-full bg-base-300">
-      <label htmlFor="my-drawer" className="btn btn-square btn-ghost" aria-label="open side">
+      <label htmlFor="my-drawer" className="btn btn-square btn-ghost" aria-label="Open sidebar">
         <PanelLeftIcon className="size-5" />
       </label>
 
