@@ -7,22 +7,22 @@ export const NAVIGATION = [
   {
     name: "Dashboard",
     path: "/dashboard",
-    icon: <HomeIcon clasName="size-5" />
+    icon: <HomeIcon className="size-5" />
   },
   {
     name: "Products",
     path: "/products",
-    icon: <ShoppingCartIcon clasName="size-5" />
+    icon: <ShoppingCartIcon className="size-5" />
   },
   {
     name: "Orders",
     path: "/orders",
-    icon: <ClipboardListIcon clasName="size-5" />
+    icon: <ClipboardListIcon className="size-5" />
   },
   {
     name: "Customers",
     path: "/customers",
-    icon: <UsersIcon clasName="size-5" />
+    icon: <UsersIcon className="size-5" />
   }
 ]
 
@@ -37,7 +37,7 @@ const Navbar = () => {
 
       <div className="flex-1 px-4">
         <h1 className="text-xl font-bold">
-          {NAVIGATION.find((item) => item.name === location.pathname)?.name || "Dashboard"}
+          {NAVIGATION.find((item) => item.path === location.pathname)?.name || "Dashboard"}
         </h1>
       </div>
 
