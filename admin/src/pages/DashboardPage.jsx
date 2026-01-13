@@ -16,12 +16,12 @@ const DashboardPage = () => {
     queryFn: statsApi.getDashboardStats,
   });
 
-  const recentOrders = ordersData.orders.slice(0, 5) || [];
+  const recentOrders = ordersData?.orders?.slice(0, 5) || [];
 
   const statsCards = [
     {
       name: "Total Revenue",
-      value: statsLoading ? "..." : `${statsData.totalRevenue.toFixed(2) || 0}`,
+      value: statsLoading ? "..." : `${statsData?.totalRevenue?.toFixed(2) || 0}`,
       icon: <DollarSignIcon className="w-8 h-8" />
     },
     {
@@ -64,7 +64,7 @@ const DashboardPage = () => {
               <span className="loading loading-spinner loading-lg" />
             </div>
           ) : recentOrders.length === 0 ? (
-            <div className="text-center py-8 text0base-content/60">No ordres yet</div>
+            <div className="text-center py-8 text-base-content/60">No orders yet</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="table">
@@ -90,7 +90,7 @@ const DashboardPage = () => {
                         <div>
                           <div className="font-medium">{order.shippingAddress.fullName}</div>
                           <div className="text-sm opacity-60">
-                            {order.orderItems.length} items(s)
+                            {order.orderItems.length} item(s)
                           </div>
                         </div>
                       </td>
@@ -107,13 +107,13 @@ const DashboardPage = () => {
                       </td>
 
                       <td>
-                        <div className={`{badge ${getOrderStatusBadge(order.status)}`}>
+                        <div className={`badge ${getOrderStatusBadge(order.status)}`}>
                           {capitalizeText(order.status)}
                         </div>
                       </td>
 
                       <td>
-                        <span className="text-sm opacity-60">{formatDate(order.createdAt())}</span>
+                        <span className="text-sm opacity-60">{formatDate(order.createdAt)}</span>
                       </td>
                     </tr>
                   ))}
