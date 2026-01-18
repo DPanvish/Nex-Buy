@@ -145,6 +145,45 @@ export const updateProduct = async (req, res) => {
     }
 }
 
+export const deleteProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const product = await Product.findById(id)
+
+        if(!product){
+            return res.status(404).json({
+                success: false,
+                message: "Product not found"
+            });
+        }
+
+        // Delete images from cloudinary
+        if(product.images && product.images.length > 0){
+            const deletePromises = product.images.map((imageUrl) => {
+                const publicId = "products/" + imageUrl.split("/products/")[1]?.split(".")[0];
+                if(publicId){
+                    return cloudinary.uploader.destroy(publicId);
+                }
+            });
+
+            await Promise.all(deletePromises.filter(Boolean));
+        }
+
+        await product.findByIdAndDelete(id);
+
+        res.status(200).json({
+            success: true,
+            message: "Product deleted successfully"
+        });
+    }catch (error) {
+        console.error("Error in deleteProduct:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+    }
+}
+
 export const getAllOrders = async (_, res) => {
     try {
         const orders = (await Order.find().populate("user", "name email").populate("orderItems.product")).sort({createdAt: -1});

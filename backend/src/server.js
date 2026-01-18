@@ -1,17 +1,17 @@
 import express from "express";
 import path from "path";
 import cors from "cors";
-import { ENV } from "../config/env.js";
-import connectDB from "../config/db.js";
+import { ENV } from "./config/env.js";
+import connectDB from "./config/db.js";
 import { clerkMiddleware } from "@clerk/express";
 import { serve } from "inngest/express";
-import { inngest, functions } from "../config/inngest.js";
-import adminRoutes from "../routes/admin.route.js";
-import userRoutes from "../routes/user.route.js";
-import orderRoutes from "../routes/order.route.js";
-import reviewRoutes from "../routes/review.route.js";
-import productRoutes from "../routes/product.route.js";
-import cartRoutes from "../routes/cart.route.js";
+import { inngest, functions } from "./config/inngest.js";
+import adminRoutes from "./routes/admin.route.js";
+import userRoutes from "./routes/user.route.js";
+import orderRoutes from "./routes/order.route.js";
+import reviewRoutes from "./routes/review.route.js";
+import productRoutes from "./routes/product.route.js";
+import cartRoutes from "./routes/cart.route.js";
 
 await connectDB();
 
