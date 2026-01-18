@@ -145,6 +145,20 @@ export const updateProduct = async (req, res) => {
     }
 }
 
+export const deleteProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await product.findByIdAndDelete(id);
+
+        res.status(200).json({
+            success: true,
+            message: "Product deleted successfully"
+        });
+    }catch (error) {
+        console.error("Error in deleteProduct:", error);
+    }
+}
+
 export const getAllOrders = async (_, res) => {
     try {
         const orders = (await Order.find().populate("user", "name email").populate("orderItems.product")).sort({createdAt: -1});

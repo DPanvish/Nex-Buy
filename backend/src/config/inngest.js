@@ -1,6 +1,6 @@
 import { Inngest } from "inngest";
-import { ENV } from "../config/env.js";
-import connectDB from "../config/db.js";
+import { ENV } from "./env.js";
+import connectDB from "./db.js";
 import { User } from "../models/user.model.js";
 
 export const inngest = new Inngest({id: "nex-buy"});
