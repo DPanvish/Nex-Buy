@@ -85,6 +85,13 @@ const ProductsPage = () => {
     if(files.length > 3){
       return alert("Maximum 3 images allowed");
     }
+    
+    // Revoke previous object URLs to avoid memory leaks
+    imagePreviews.forEach((url) => {
+      if(url.startsWith("blob:")){
+        URL.revokeObjectURL(url);
+      }
+    })
 
     setImages(files);
     setImagePreviews(files.map((file) => URL.createObjectURL(file)));
@@ -200,7 +207,12 @@ const ProductsPage = () => {
       </div>
 
       {/* ADD/EDIT PRODUCT MODAL */}
-      <input type="checkbox" className="modal-toggle" checked={showModal} />
+      <input
+        type="checkbox"
+        className="modal-toggle"
+        checked={showModal}
+        onChange={(e) => setShowModal(e.target.checked)}
+      />
       <div className="modal">
         <div className="modal-box max-w-2xl">
           <div className="flex items-center justify-between mb-4">
