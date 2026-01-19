@@ -53,11 +53,15 @@ const CustomersPage = () => {
                       <td className="flex items-center gap-3">
                         <div className="avatar placeholder">
                           <div className="bg-primary text-primary-content rounded-full w-12">
-                            <img
-                              src={customer.imageUrl}
-                              alt={customer.name}
-                              className="w-12 h-12 rounded-full" 
-                            />
+                            {customer.imageUrl ? (
+                              <img
+                                src={customer.imageUrl}
+                                alt={customer.name}
+                                className="w-12 h-12 rounded-full" 
+                              />
+                            ) : (
+                              <span>{customer.name?.charAt(0)?.toUpperCase()}</span>
+                            )}
                           </div>
                         </div>
                         <div className="font-semibold">{customer.name}</div>
