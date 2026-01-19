@@ -40,9 +40,9 @@ const OrdersPage = () => {
             <div className="flex justify-center py-12">
               <span className="loading loading-spinner loading-lg" />
             </div>
-          ) : ordersData.length === 0 ? (
+          ) : !ordersData?.length ? (
             <div className="text-center py-12 text-base-content/60">
-              <p className="text-xl font-cemibold mb-2">No orders yet</p>
+              <p className="text-xl font-semibold mb-2">No orders yet</p>
               <p className="text-sm">Orders will appear here once customers make purchases.</p>
             </div>
           ) : (
@@ -80,7 +80,7 @@ const OrdersPage = () => {
                           <div className="font-medium">{totalQuantity} item(s)</div>
                           <div className="text-sm opacity-60">
                             {order.orderItems[0]?.name}
-                            {order.orderItems.length > 1 && `+${order.orderItems.length -1} more`}
+                            {order.orderItems.length > 1 && ` +${order.orderItems.length - 1} more`}
                           </div>
                         </td>
 
