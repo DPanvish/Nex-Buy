@@ -123,7 +123,7 @@ const ProductsPage = () => {
     if(editingProduct){
       updateProductMutation.mutate({
         id: editingProduct._id,
-        data: formDataToSend,
+        formData: formDataToSend,
       });
     }else{
       createProductMutation.mutate(formDataToSend);

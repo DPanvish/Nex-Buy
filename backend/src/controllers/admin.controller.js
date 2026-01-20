@@ -2,8 +2,14 @@ import { v2 as cloudinary } from "cloudinary";
 import { Product } from "../models/product.model.js";
 import { Order } from "../models/order.model.js";
 import { User } from "../models/user.model.js";
+import fs from "fs";
 
 
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 export const createProduct = async (req, res) => {
     try {
@@ -30,22 +36,37 @@ export const createProduct = async (req, res) => {
             });
         }
 
-        const uploadPromises = req.files.map((file) => {
-            return cloudinary.uploader.upload(file.path, {
-                folder: "products"
+        const priceNum = parseFloat(price);
+        const stockNum = parseInt(stock);
+
+        if(isNaN(priceNum) || isNaN(stockNum)){
+            return res.status(400).json({
+                success: false,
+                message: "Price and stock must be valid numbers"
             });
+        }
+
+        const uploadPromises = req.files.map(async (file) => {
+            if (!file.path) {
+                throw new Error("File path is missing");
+            }
+            try {
+                const result = await cloudinary.uploader.upload(file.path, {
+                    folder: "products"
+                });
+                return result.secure_url;
+            } finally {
+                if (file.path && fs.existsSync(file.path)) fs.unlinkSync(file.path);
+            }
         });
 
-        const uploadImages = await Promise.all(uploadPromises);
-
-        // secure url
-        const imageUrls = uploadImages.map((image) => image.secure_url);
+        const imageUrls = await Promise.all(uploadPromises);
 
         const product = await Product.create({
             name,
             description,
-            price: parseFloat(price),
-            stock: parseInt(stock),
+            price: priceNum,
+            stock: stockNum,
             category,
             images: imageUrls
         });
@@ -59,7 +80,7 @@ export const createProduct = async (req, res) => {
         console.error("Error in createProduct:", error);
         res.status(500).json({
             success: false,
-            message: "Internal Server Error"
+            message: error.message || "Internal Server Error"
         });
     }
 }
@@ -119,14 +140,21 @@ export const updateProduct = async (req, res) => {
                 });
             }
 
-            const uploadPromises = req.files.map((file) => {
-                return cloudinary.uploader.upload(file.path, {
-                    folder: "products"
-                });
+            const uploadPromises = req.files.map(async (file) => {
+                if (!file.path) {
+                    throw new Error("File path is missing");
+                }
+                try {
+                    const result = await cloudinary.uploader.upload(file.path, {
+                        folder: "products"
+                    });
+                    return result.secure_url;
+                } finally {
+                    if (file.path && fs.existsSync(file.path)) fs.unlinkSync(file.path);
+                }
             });
 
-            const uploadedImages = await Promise.all(uploadPromises);
-            product.images = uploadedImages.map((image) => image.secure_url);
+            product.images = await Promise.all(uploadPromises);
         }
 
         await product.save();
@@ -140,7 +168,7 @@ export const updateProduct = async (req, res) => {
         console.error("Error in updateProduct:", error);
         res.status(500).json({
             success: false,
-            message: "Internal Server Error"
+            message: error.message || "Internal Server Error"
         });
     }
 }
@@ -148,7 +176,7 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const product = await Product.findById(id)
+        const product = await Product.findById(id);
 
         if(!product){
             return res.status(404).json({
@@ -159,17 +187,21 @@ export const deleteProduct = async (req, res) => {
 
         // Delete images from cloudinary
         if(product.images && product.images.length > 0){
-            const deletePromises = product.images.map((imageUrl) => {
-                const publicId = "products/" + imageUrl.split("/products/")[1]?.split(".")[0];
-                if(publicId){
-                    return cloudinary.uploader.destroy(publicId);
-                }
-            });
-
-            await Promise.all(deletePromises.filter(Boolean));
+            try {
+                const deletePromises = product.images.map((imageUrl) => {
+                    const parts = imageUrl.split("/products/");
+                    if (parts.length > 1) {
+                        const publicId = "products/" + parts[1].split(".")[0];
+                        return cloudinary.uploader.destroy(publicId);
+                    }
+                });
+                await Promise.all(deletePromises.filter(Boolean));
+            } catch (error) {
+                console.error("Error deleting images from Cloudinary:", error);
+            }
         }
 
-        await product.findByIdAndDelete(id);
+        await Product.findByIdAndDelete(id);
 
         res.status(200).json({
             success: true,
@@ -179,14 +211,14 @@ export const deleteProduct = async (req, res) => {
         console.error("Error in deleteProduct:", error);
         res.status(500).json({
             success: false,
-            message: "Internal Server Error"
+            message: error.message || "Internal Server Error"
         });
     }
 }
 
 export const getAllOrders = async (_, res) => {
     try {
-        const orders = (await Order.find().populate("user", "name email").populate("orderItems.product")).sort({createdAt: -1});
+        const orders = await Order.find().populate("user", "name email").populate("orderItems.product").sort({createdAt: -1});
         res.status(200).json({
             success: true,
             message: "Orders fetched successfully",
