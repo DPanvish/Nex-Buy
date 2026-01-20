@@ -22,10 +22,12 @@ const ProductsPage = () => {
   const queryClient = useQueryClient();
 
   // useQuery is used to fetch some data
-  const {data: products = []} = useQuery({
+  const {data: productsData, isLoading} = useQuery({
     queryKey: ["products"],
     queryFn: productApi.getAll,
   });
+
+  const products = productsData?.products || [];
 
   // useMutation is used to create, update, delete data
   const createProductMutation = useMutation({
@@ -146,7 +148,11 @@ const ProductsPage = () => {
 
       {/* PRODUCTS GRID */}
       <div className="grid grid-cols-1 gap-4">
-        {products.map(product => {
+        {isLoading ? (
+          <div className="flex justify-center py-8">
+            <span className="loading loading-spinner loading-lg" />
+          </div>
+        ) : products?.map((product) => {
           const status = getStockStatusBadge(product.stock);
 
           return (

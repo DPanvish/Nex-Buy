@@ -1,8 +1,12 @@
 import React from 'react'
+import { SignIn } from "@clerk/clerk-react"
 
 const LoginPage = () => {
   return (
-    <div>LoginPage</div>
+    <div>
+      LoginPage
+      <SignIn />
+    </div>
   )
 }
 
