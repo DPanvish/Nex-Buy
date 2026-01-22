@@ -3,7 +3,7 @@ import React from 'react'
 import useSocialAuth from '@/hooks/useSocialAuth'
 
 const AuthScreen = () => {
-  const {isLoading, handleSocialAuth} = useSocialAuth()
+  const {loadingStrategy, handleSocialAuth} = useSocialAuth()
 
   return (
     <View className="items-center justify-center flex-1 bg-white">
@@ -18,7 +18,7 @@ const AuthScreen = () => {
         <TouchableOpacity 
           className="flex-row items-center justify-center px-6 py-2 bg-white border border-gray-300 rounded-full"
           onPress={() => handleSocialAuth("oauth_google")}
-          disabled={isLoading}
+          disabled={loadingStrategy !== null}
           style={{
             shadowOffset: {
               width: 0,
@@ -28,7 +28,7 @@ const AuthScreen = () => {
             elevation: 2, // This is only for android (will not work for ios)
           }}
         >
-          {isLoading ? (
+          {loadingStrategy === "oauth_google" ? (
             <ActivityIndicator size={"small"} color={"#4285f4"} />
           ) : (
             <View className="flex-row items-center justify-center">
@@ -46,8 +46,9 @@ const AuthScreen = () => {
         <TouchableOpacity 
           className="flex-row items-center justify-center px-6 py-3 bg-white border border-gray-300 rounded-full"
           onPress={() => handleSocialAuth("oauth_apple")}
-          disabled={isLoading}
+          disabled={loadingStrategy !== null}
           style={{
+            shadowColor: '#000',
             shadowOffset: {
               width: 0,
               height: 1
@@ -56,7 +57,7 @@ const AuthScreen = () => {
             elevation: 2, // This is only for android (will not work for ios)
           }}
         >
-          {isLoading ? (
+          {loadingStrategy === "oauth_apple" ? (
             <ActivityIndicator size={"small"} color={"#4285f4"} />
           ) : (
             <View className="flex-row items-center justify-center">
@@ -72,7 +73,7 @@ const AuthScreen = () => {
       </View>
 
       <Text className="px-2 mt-6 text-xs leading-4 text-center text-gray-500">
-        By signing up, you aggree to our <Text className="text-blue-500">Terms</Text>
+        By signing up, you agree to our <Text className="text-blue-500">Terms</Text>
         {", "} 
         <Text className="text-blue-500">Privacy Policy</Text>
         {", and "} 
