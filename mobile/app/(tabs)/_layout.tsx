@@ -44,7 +44,7 @@ const TabsLayout = () => {
     ),
     tabBarLabelStyle: {
       fontSize: 12,
-      fontWeight: 600,
+      fontWeight: "600",
       backgroundColor: "transparent"
     },
     headerShown: false,
@@ -66,7 +66,7 @@ const TabsLayout = () => {
     <Tabs.Screen 
       name="profile"
       options={{
-        title: "Shop",
+        title: "Profile",
         tabBarIcon: ({color, size}) => <Ionicons name="person" size={size} color={color} />
       }}
     />
