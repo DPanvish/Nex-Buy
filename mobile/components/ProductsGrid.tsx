@@ -40,11 +40,17 @@ const ProductsGrid = ({products, isLoading, isError}: ProductGridProps) => {
       // onPress={() => router.push(`/product/${product._id}`)}
     >
       <View className="relative">
-        <Image
-          source={{uri: product.images[0]}}
-          className="w-full h-44 bg-background-lighter"
-          resizeMode="cover" 
-        />
+        {product.images?.[0] ? (
+          <Image
+            source={{uri: product.images[0]}}
+            className="w-full h-44 bg-background-lighter"
+            resizeMode="cover"
+          />
+        ) : (
+          <View className="items-center justify-center w-full h-44 bg-background-lighter">
+            <Ionicons name="image-outline" size={28} color="#666" />
+          </View>
+        )}
 
         <TouchableOpacity
           className="absolute p-2 rounded-full top-3 right-3 bg-black/30 backdrop-blur-xl"

@@ -19,6 +19,7 @@ export const useApi = () => {
       const  token = await getToken();
 
       if(token){
+        config.headers = config.headers ?? {};
         config.headers.Authorization = `Bearer ${token}`;
       }
 
@@ -29,7 +30,7 @@ export const useApi = () => {
     return () => {
       api.interceptors.request.eject(interceptor);
     }
-  }, []);
+  }, [getToken]);
 
   return api;
 };
