@@ -93,3 +93,10 @@ export interface Cart {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface ProductGridProps {
+  products: Product[];
+  isLoading: boolean;
+  isError: boolean;
+}
+
