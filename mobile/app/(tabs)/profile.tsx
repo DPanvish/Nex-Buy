@@ -51,7 +51,7 @@ const ProfileScreen = () => {
                   {user?.firstName} {user?.lastName}
                 </Text>
                 <Text className="text-sm text-text-secondary">
-                  {user?.emailAddresses[0].emailAddress}
+                  {user?.emailAddresses?.[0]?.emailAddress || "No email"}
                 </Text>
               </View>
             </View>
@@ -72,7 +72,7 @@ const ProfileScreen = () => {
                 className="items-center justify-center w-16 h-16 mb-4 rounded-full"
                 style={{backgroundColor: item.color + "20"}}
               >
-                <Ionicons name={item.icon as any} size={28} color={item.color} />
+                <Ionicons name={item.icon} size={28} color={item.color} />
               </View>
               <Text className="text-base font-bold text-text-primary">{item.title}</Text>
             </TouchableOpacity>
