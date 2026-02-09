@@ -125,18 +125,18 @@ const WishlistScreen = () => {
                   />
 
                   <View className="flex-1 ml-4">
-                    <Text className="mb-2 text-base text-text-primary fonmt-bold" numberOfLines={2}>{product.name}</Text>
+                    <Text className="mb-2 text-base font-bold text-text-primary" numberOfLines={2}>{product.name}</Text>
                     <Text className="mb-2 text-xl font-bold text-primary">${product.price.toFixed(2)}</Text>
 
                     {product.stock > 0 ? (
                       <View className="flex-row items-center">
                         <View className="w-2 h-2 mr-2 bg-green-500 rounded-full" />
-                        <Text className="font-semibold text-green-500 text-am">{product.stock} in stock</Text>
+                        <Text className="text-sm font-semibold text-green-500">{product.stock} in stock</Text>
                       </View>
                     ) : (
-                      <View className="flex-row itemx-center">
+                      <View className="flex-row item-center">
                         <View className="w-2 h-2 mr-2 bg-red-500 rounded-full" />
-                        <Text className="text-sm text-red-500 font-demibold">Out of stock</Text>
+                        <Text className="text-sm font-semibold text-red-500">Out of stock</Text>
                       </View>
                     )}
                   </View>
@@ -147,7 +147,7 @@ const WishlistScreen = () => {
                     onPress={() => handleRemoveFromWishlist(product._id, product.name)}
                     disabled={isRemovingFromWishlist}
                   >
-                    <Ionicons nmae="trash-outline" size={20} color="#EF4444" />
+                    <Ionicons name="trash-outline" size={20} color="#EF4444" />
                   </TouchableOpacity>
                 </View>
 
