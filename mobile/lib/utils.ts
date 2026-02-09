@@ -1,3 +1,5 @@
+import { SecurityOption } from "@/types";
+
 export const CATEGORIES = [
     {
         name: "All", 
@@ -50,4 +52,80 @@ export const MENU_ITEMS = [
         color: "#EF4444",
         action: "/wishlist",
     }
+] as const;
+
+export const SECURITY_SETTINGS: SecurityOption[] = [
+    {
+        id: "password",
+        icon: "lock-closed-outline",
+        title: "Change Password",
+        description: "Change your password",
+        type: "navigation",
+    },
+    {
+        id: "two-factor",
+        icon: "shield-checkmark-outline",
+        title: "Two-Factor Authentication",
+        description: "Enable or disable two-factor authentication",
+        type: "toggle",
+    },
+    {
+        id: "biometric",
+        icon: "finger-print-outline",
+        title: "Biometric Authentication",
+        description: "Enable or disable biometric authentication",
+        type: "toggle",
+    }
+] as const;
+
+export const PRIVACY_SETTINGS: SecurityOption[] = [
+    {
+        id: "push",
+        icon: "notifications-outline",
+        title: "Push Notifications",
+        description: "Receive push notifications",
+        type: "toggle",
+    },
+    {
+        id: "email",
+        icon: "mail-outline",
+        title: "Email Notifications",
+        description: "Receive order updates via email",
+        type: "toggle",
+    },
+    {
+        id: "marketing",
+        icon: "megaphone-outline",
+        title: "Marketing Emails",
+        description: "Receive promotional emails",
+        type: "toggle",
+    },
+    {
+        id: "data",
+        icon: "analytics-outline",
+        title: "Share Usage Data",
+        description: "Help us improve the app",
+        type: "toggle",
+    },
+];
+
+export const ACCOUNT_SETTINGS= [
+    {
+        id: "activity",
+        icon: "time-outline",
+        title: "Account Activity",
+        description: "View recent login activity",
+    },
+    {
+        id: "devices",
+        icon: "phone-portrait-outline",
+        title: "Connected Devices",
+        description: "Manage devices with access",
+    },
+    {
+        id: "data-download",
+        icon: "download-outline",
+        title: "Download Your Data",
+        description: "Get a copy of your data",
+    },
 ] as const;

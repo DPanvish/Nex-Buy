@@ -100,3 +100,12 @@ export interface ProductGridProps {
   isError: boolean;
 }
 
+
+export interface SecurityOption {
+  id: string;
+  icon: string;
+  title: string;
+  description: string;
+  type: "navigation" | "toggle";
+  value?: boolean;
+}
