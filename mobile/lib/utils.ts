@@ -43,7 +43,7 @@ export const MENU_ITEMS = [
         icon: "location-outline",
         title: "Addresses",
         color: "#F59E0B",
-        action: "/address",
+        action: "/addresses",
     },
     {
         id: 4,
