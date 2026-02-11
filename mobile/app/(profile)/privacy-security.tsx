@@ -13,12 +13,17 @@ const PrivacyAndSecurityScreen = () => {
   const [marketingEmails, setMarketingEmails] = useState(false);
   const [shareData, setShareData] = useState(false);
 
-  SECURITY_SETTINGS[1].value = twoFactorEnabled;
-  SECURITY_SETTINGS[2].value = biometricEnabled;
-  PRIVACY_SETTINGS[1].value = pushNotifications;
-  PRIVACY_SETTINGS[2].value = emailNotifications;
-  PRIVACY_SETTINGS[3].value = marketingEmails;
-  PRIVACY_SETTINGS[4].value = shareData;
+  const getSwitchValue = (id: string) => {
+    switch (id) {
+      case "two-factor": return twoFactorEnabled;
+      case "biometric": return biometricEnabled;
+      case "push": return pushNotifications;
+      case "email": return emailNotifications;
+      case "marketing": return marketingEmails;
+      case "data": return shareData;
+      default: return false;
+    }
+  };
 
   const handleToggle = (id: string, value: boolean) => {
     switch (id) {
@@ -82,7 +87,7 @@ const PrivacyAndSecurityScreen = () => {
 
                   {setting.type === "toggle" ? (
                     <Switch
-                      value={setting.value}
+                      value={getSwitchValue(setting.id)}
                       onValueChange={(value) => handleToggle(setting.id, value)} 
                       thumbColor="#FFFFFF"
                       trackColor={{false: "#2A2A2A", true: "#ff9300"}}
@@ -113,7 +118,7 @@ const PrivacyAndSecurityScreen = () => {
                     <Text className="text-sm text-text-secondary">{setting.description}</Text>
                   </View>
                   <Switch
-                    value={setting.value}
+                    value={getSwitchValue(setting.id)}
                     onValueChange={(value) => handleToggle(setting.id, value)}
                     trackColor={{ false: "#2A2A2A", true: "#1DB954" }}
                     thumbColor="#FFFFFF"

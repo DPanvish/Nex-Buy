@@ -100,7 +100,6 @@ export interface ProductGridProps {
   isError: boolean;
 }
 
-
 export interface SecurityOption {
   id: string;
   icon: string;
@@ -108,4 +107,34 @@ export interface SecurityOption {
   description: string;
   type: "navigation" | "toggle";
   value?: boolean;
+}
+
+export interface AddressFormData {
+  label: string;
+  fullName: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  phoneNumber: string;
+  isDefault: boolean;
+}
+
+export interface AddressFormModalProps {
+  visible: boolean;
+  isEditing: boolean;
+  addressForm: AddressFormData;
+  isAddingAddress: boolean;
+  isUpdatingAddress: boolean;
+  onClose: () => void;
+  onSave: () => void;
+  onFormChange: (form: AddressFormData) => void;
+}
+
+interface AddressCardProps {
+  address: Address;
+  onEdit: (address: Address) => void;
+  onDelete: (addressId: string, label: string) => void;
+  isUpdatingAddress: boolean;
+  isDeletingAddress: boolean;
 }
