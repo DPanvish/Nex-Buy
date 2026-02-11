@@ -131,7 +131,7 @@ export interface AddressFormModalProps {
   onFormChange: (form: AddressFormData) => void;
 }
 
-interface AddressCardProps {
+export interface AddressCardProps {
   address: Address;
   onEdit: (address: Address) => void;
   onDelete: (addressId: string, label: string) => void;

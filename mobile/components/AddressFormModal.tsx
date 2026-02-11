@@ -13,7 +13,7 @@ const AddressFormModal = ({addressForm, isAddingAddress, isUpdatingAddress, onCl
       >
         <SafeScreen>
           {/* HEADER */}
-          <View className="flex-row items-center justify-between px-6 py-5 border-b border-surface items-row">
+          <View className="flex-row items-center justify-between px-6 py-5 border-b border-surface">
             <Text className="text-2xl font-bold text-text-primary">
               {isEditing ? "Edit Address" : "Add Address"}
             </Text>
@@ -32,7 +32,7 @@ const AddressFormModal = ({addressForm, isAddingAddress, isUpdatingAddress, onCl
               <View className="mb-5">
                 <Text className="mb-2 font-semibold text-text-primary">Label</Text>
                 <TextInput
-                  className="text-base bg-surface text-text-primaryp-4 rounded-2xl"
+                  className="px-4 py-4 text-base bg-surface text-text-primary rounded-2xl"
                   placeholder="e.g., Home, Work, Office"
                   placeholderTextColor="#666"
                   value={addressForm.label}
