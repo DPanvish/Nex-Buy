@@ -7,35 +7,8 @@ import AddressesHeader from '@/components/AddressesHeader';
 import { Address } from '@/types';
 import AddressFormModal from '@/components/AddressFormModal';
 import AddressCard from '@/components/AddressCard';
-
-const ErrorUI = () => {
-  return (
-    <SafeScreen>
-      <AddressesHeader />
-      <View className="items-center justify-center flex-1 px-6">
-        <Ionicons name="alert-circle-outline" size={64} color="#FF6B6B" />
-        <Text className="mt-4 text-xl font-semibold text-text-primary">
-          Failed to load addresses
-        </Text>
-        <Text className="mt-2 text-center text-text-secondary">
-          Please check your connection and try again
-        </Text>
-      </View>
-    </SafeScreen>
-  );
-}
-
-const LoadingUI = () => {
-  return (
-    <SafeScreen>
-      <AddressesHeader />
-      <View className="items-center justify-center flex-1 px-6">
-        <ActivityIndicator size="large" color="#00D9FF" />
-        <Text className="mt-4 text-text-secondary">Loading addresses...</Text>
-      </View>
-    </SafeScreen>
-  );
-}
+import LoadingUI from '@/components/LoadingUI';
+import ErrorUI from '@/components/ErrorUI';
 
 const AddressesScreen = () => {
 
@@ -135,11 +108,11 @@ const AddressesScreen = () => {
   };
 
   if(isLoading){
-    return <LoadingUI />;
+    return <LoadingUI screen="addresses"/>;
   }
 
   if(isError){
-    return <ErrorUI />;
+    return <ErrorUI screen="addresses" />;
   }
 
   return (
