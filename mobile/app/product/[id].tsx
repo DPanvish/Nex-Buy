@@ -14,9 +14,9 @@ import { Image } from 'expo-image';
 const {width} = Dimensions.get("window");
 
 const ProductDetailScreen = () => {
-  const {id} = useLocalSearchParams();
+  const {id} = useLocalSearchParams<{id: string}>();
 
-  const {data:product, isError, isLoading} = useProduct(id as string);
+  const {data:product, isError, isLoading} = useProduct(id);
   const {addToCart, isAddingToCart} = useCart();
   const {isInWishlist, toggleWishlist, isAddingToWishlist, isRemovingFromWishlist} = useWishlist();
 
@@ -90,6 +90,7 @@ const ProductDetailScreen = () => {
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
+            scrollEventThrottle={16}
             onScroll={(e) => {
               const index = Math.round(e.nativeEvent.contentOffset.x / width);
               setSelectedImageIndex(index);
@@ -193,42 +194,42 @@ const ProductDetailScreen = () => {
             <Text className="text-base leading-6 text-text-secondary">{product.description}</Text>
           </View>
         </View>
-
-        {/* Bottom Action Bar */}
-        <View className="absolute bottom-0 left-0 right-0 px-6 py-4 pb-8 border-t bg-background/95 backdrop-blur-xl border-surface">
-          <View className="flex-row items-center gap-3">
-            <View className="flex-1">
-              <Text className="mb-1 text-sm text-text-secondary">Total Price</Text>
-              <Text className="text-2xl font-bold text-primary">
-                ${(product?.price * quantity)?.toFixed(2)}
-              </Text>
-            </View>
-            <TouchableOpacity
-              className={`rounded-2xl px-8 py-4 flex-row items-center ${
-                !inStock ? "bg-surface" : "bg-primary"
-              }`}
-              activeOpacity={0.8}
-              onPress={handleAddToCart}
-              disabled={!inStock || isAddingToCart}
-            >
-              {isAddingToCart ? (
-                <ActivityIndicator size="small" color="#121212" />
-              ) : (
-                <>
-                  <Ionicons name="cart" size={24} color={!inStock ? "#666" : "#121212"} />
-                  <Text
-                    className={`font-bold text-lg ml-2 ${
-                      !inStock ? "text-text-secondary" : "text-background"
-                    }`}
-                  >
-                    {!inStock ? "Out of Stock" : "Add to Cart"}
-                  </Text>
-                </>
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
       </ScrollView>
+
+      {/* Bottom Action Bar */}
+      <View className="absolute bottom-0 left-0 right-0 px-6 py-4 pb-8 border-t bg-background/95 backdrop-blur-xl border-surface">
+        <View className="flex-row items-center gap-3">
+          <View className="flex-1">
+            <Text className="mb-1 text-sm text-text-secondary">Total Price</Text>
+            <Text className="text-2xl font-bold text-primary">
+              ${(product?.price * quantity)?.toFixed(2)}
+            </Text>
+          </View>
+          <TouchableOpacity
+            className={`rounded-2xl px-8 py-4 flex-row items-center ${
+              !inStock ? "bg-surface" : "bg-primary"
+            }`}
+            activeOpacity={0.8}
+            onPress={handleAddToCart}
+            disabled={!inStock || isAddingToCart}
+          >
+            {isAddingToCart ? (
+              <ActivityIndicator size="small" color="#121212" />
+            ) : (
+              <>
+                <Ionicons name="cart" size={24} color={!inStock ? "#666" : "#121212"} />
+                <Text
+                  className={`font-bold text-lg ml-2 ${
+                    !inStock ? "text-text-secondary" : "text-background"
+                  }`}
+                >
+                  {!inStock ? "Out of Stock" : "Add to Cart"}
+                </Text>
+              </>
+            )}
+          </TouchableOpacity>
+        </View>
+      </View>
     </SafeScreen>
   )
 }
