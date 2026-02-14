@@ -6,41 +6,9 @@ import useCart from '@/hooks/useCart'
 import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
+import LoadingUI from '@/components/LoadingUI'
+import ErrorUI from '@/components/ErrorUI'
 
-const LoadingUI = () => {
-  return (
-    <SafeScreen>
-      <View className="flex-row items-center px-6 pb-5 border-b border-surface">
-        <TouchableOpacity onPress={() => router.back()} className="mr-4">
-          <Ionicons name="arrow-back" size={28} color="#FFFFFF" />
-        </TouchableOpacity>
-        <Text className='text-2xl font-bold text-text-primary'>Wishlist</Text>
-      </View>
-      <View className="items-center justify-center flex-1">
-        <ActivityIndicator className="items-center justify-center flex-1" />
-        <Text className="mt-4 text-text-primary">Loading wishlist...</Text>
-      </View>
-    </SafeScreen>
-  )
-}
-
-const ErrorUI = () => {
-  return (
-    <SafeScreen>
-      <View className="flex-row items-center px-6 pb-5 border-b border-surface">
-        <TouchableOpacity onPress={() => router.back()} className="mr-4">
-          <Ionicons name="arrow-back" size={28} color="#FFFFFF" />
-        </TouchableOpacity>
-        <Text className="text-2xl font-bold text-text-primary">Wishlist</Text>
-      </View>
-      <View className="items-center justify-center flex-1 px-6">
-        <Ionicons name="alert-circle-outline" size={64} color="#FF6B6B"/>
-        <Text className="mt-4 text-xl font-semibold text-text-primary">Failed to load wishlist</Text>
-        <Text className="mt-2 text-center text-text-secondary">Please check your connection and try again</Text>
-      </View>
-    </SafeScreen>
-  )
-}
 
 const WishlistScreen = () => {
   const {wishlist, isLoading, isError, removeFromWishlist, isRemovingFromWishlist} = useWishlist();
@@ -69,11 +37,11 @@ const WishlistScreen = () => {
   };
 
   if(isLoading){
-    return <LoadingUI />
+    return <LoadingUI screen="wishlist" />
   }
 
   if(isError){
-    return <ErrorUI />
+    return <ErrorUI screen="wishlist" />
   }
 
   return (

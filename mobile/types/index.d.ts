@@ -138,3 +138,7 @@ export interface AddressCardProps {
   isUpdatingAddress: boolean;
   isDeletingAddress: boolean;
 }
+
+export interface UIProps {
+  screen: string;
+}
