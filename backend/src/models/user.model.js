@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     },
     stripeCustomerId: {
         type: String, 
-        default: "",S
+        default: "",
     },
     addresses: [addressSchema],
     wishlist: [
