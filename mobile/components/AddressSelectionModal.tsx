@@ -1,5 +1,5 @@
 import { View, Text, Modal, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Address, AddressSelectionModalProps } from '@/types'
 import { useAddresses } from '@/hooks/useAddresses';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,6 +7,12 @@ import { Ionicons } from '@expo/vector-icons';
 const AddressSelectionModal = ({visible, onClose, onProceed, isProcessing} : AddressSelectionModalProps) => {
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const {addresses, isLoading: addressesLoading} = useAddresses();
+
+  useEffect(() => {
+    if(visible){
+      setSelectedAddress(null);
+    }
+  }, [visible]);
 
   return (
     <Modal visible={visible} animationType="slide" transparent={true} onRequestClose={onClose}>
