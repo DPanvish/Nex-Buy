@@ -142,3 +142,17 @@ export interface AddressCardProps {
 export interface UIProps {
   screen: string;
 }
+
+export interface OrderSummaryProps {
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  total: number;
+}
+
+export interface AddressSelectionModalProps {
+  visible: boolean;
+  onClose: () => void;
+  onProceed: (address: Address) => void;
+  isProcessing: boolean;
+}
