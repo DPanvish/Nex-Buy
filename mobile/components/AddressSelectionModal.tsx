@@ -72,7 +72,7 @@ const AddressSelectionModal = ({visible, onClose, onProceed, isProcessing} : Add
 
           <View className="p-6 border-t border-surface">
             <TouchableOpacity
-              className="py-5 bg-primary rounded-2xl"
+              className={`py-5 rounded-2xl ${!selectedAddress || isProcessing ? 'bg-primary/50' : 'bg-primary'}`}
               activeOpacity={0.9}
               onPress={() => {
                 if(selectedAddress){
