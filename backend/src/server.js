@@ -21,6 +21,20 @@ const PORT = ENV.PORT;
 
 const __dirname = path.resolve();
 
+// Special handling: Stripe webhook needs raw body before any body parsing middleware
+// apply raw body parser conditionally only to webhook endpoint
+app.use(
+    "/api/payment",
+    (req, res, next) => {
+        if(req.originalUrl === "/api/payment/webhook"){
+            express.raw({type: "application/json"})(req, res, next);
+        } else {
+            express.json()(req, res, next); // parse json for non-webhook routes
+        }
+    },
+    paymentRoutes
+);
+
 app.use(express.json());
 app.use(clerkMiddleware());
 app.use(cors({origin: ENV.CLIENT_URL, credentials: true})); // credentials: true allows the broowser to send the cookies to the server with request
@@ -33,7 +47,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
-app.use("/api/payment", paymentRoutes);
+
 
 
 // Making our app ready for deployment

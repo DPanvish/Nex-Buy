@@ -4,7 +4,7 @@ import SafeScreen from '@/components/SafeScreen'
 import useCart from '@/hooks/useCart'
 import { useApi } from '@/lib/api'
 import { useAddresses } from '@/hooks/useAddresses'
-// import { useStripe } from '@stripe/stripe-react-native'
+import { useStripe } from '@stripe/stripe-react-native'
 import { Address } from '@/types'
 import LoadingUI from '@/components/LoadingUI'
 import ErrorUI from '@/components/ErrorUI'
@@ -12,6 +12,7 @@ import { Ionicons } from '@expo/vector-icons'
 import CartItemCard from '@/components/CartItemCard'
 import OrderSummary from '@/components/OrderSummary'
 import AddressSelectionModal from '@/components/AddressSelectionModal'
+import * as Sentry from '@sentry/react-native';
 
 const EmptyUI = () => {
   return (
@@ -32,7 +33,7 @@ const CartScreen = () => {
   const api = useApi();
   const {addToCart, isAddingToCart, cart, cartTotal, cartItemCount, clearCart, isClearing, isError, isLoading, isRemoving, isUpdating, removeFromCart, updateQuantity} = useCart();
   const {addresses} = useAddresses();
-  // const {initPaymentSheet, presentPaymentSheet} = useStripe();
+  const {initPaymentSheet, presentPaymentSheet} = useStripe();
   
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [addressModalVisible, setAddressModalVisible] = useState(false);
@@ -83,7 +84,84 @@ const CartScreen = () => {
     setAddressModalVisible(true);
   }
 
-  const handleProceedWithPayment = async(selectedAddress: Address) => {}
+  const handleProceedWithPayment = async(selectedAddress: Address) => {
+    setAddressModalVisible(false);
+
+    Sentry.logger.info("Checkout initiated", {
+      itemCount: cartItemCount,
+      total: total.toFixed(2),
+      city: selectedAddress.city,
+    });
+
+    try{
+      setPaymentLoading(true);
+
+      // Create payment intent
+      const {data} = await api.post("/payment/create-intent", {
+        cartItems,
+        shippingAddress: {
+          fullName: selectedAddress.fullName,
+          streetAddress: selectedAddress.streetAddress,
+          city: selectedAddress.city,
+          state: selectedAddress.state,
+          zipCode: selectedAddress.zipCode,
+          phoneNumber: selectedAddress.phoneNumber,
+        },
+      });
+
+      const {error: initError} = await initPaymentSheet({
+        paymentIntentClientSecret: data.clientSecret,
+        merchantDisplayName: "NexBuy",
+      });
+
+      if(initError){
+        Sentry.logger.error("Payment sheet init failed", {
+          errorCode: initError.code,
+          errorMessage: initError.message,
+          cartTotal: total,
+          itemCount: cartItems.length,
+        });
+
+        Alert.alert("Error", initError.message);
+        setPaymentLoading(false);
+        return;
+      }
+
+      const {error: presentError} = await presentPaymentSheet();
+
+      if(presentError){
+        Sentry.logger.error("Payment cancelled", {
+          errorCode: presentError.code,
+          errorMessage: presentError.message,
+          cartTotal: total.toFixed(2),
+          itemCount: cartItems.length,
+        });
+
+        Alert.alert("Payment cancelled", presentError.message);
+      }else{
+        Sentry.logger.info("Payment successful", {
+          total: total.toFixed(2),
+          itemCount: cartItems.length,
+        });
+
+        Alert.alert("Success", "Your payment was successful! Your order is being processed.", [
+          {text: "OK", onPress: () => {}}
+        ]);
+        await clearCart();
+      }
+
+    }catch(error){
+      Sentry.logger.error("Payment failed", {
+        error: error instanceof Error ? error.message : "Unknown error",
+        cartTotal: total.toFixed(2),
+        itemCount: cartItems.length,
+      });
+
+      Alert.alert("Error", "Failed to process payment");
+    }finally{
+      setPaymentLoading(false);
+    }
+  }
 
   if(isLoading){
     return <LoadingUI screen="Cart"/>;

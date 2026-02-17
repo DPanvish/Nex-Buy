@@ -109,3 +109,63 @@ export const createPaymentIntent = async(req, res) => {
         });
     }
 };
+
+export const handleWebhook = async (req, res) => {
+    const sig = req.headers["stripe-signature"];
+    let event;
+
+    try{
+        event = stripe.webhooks.constructEvent(req.body, sig, ENV.STRIPE_WEBHOOK_SECRET)
+    }catch(error){
+        console.error("Webhook signature verification failed", error.message);
+        return res.status(400).json({
+            success: false,
+            message: `Webhook Error: ${error.message}`
+        });
+    }
+
+    if(event.type === "payment_intent.succeeded"){
+        const paymentIntent = event.data.object;
+        
+        console.log("Payment succeeded", paymentIntent.id);
+
+        try{
+            const {userId, clerkId, orderItems, shippingAddress, totalPrice} = paymentIntent.metadata;
+
+            // Check if order exists
+            const existingOrder = await Order.findOne({"paymentResult.id": paymentIntent.id})
+
+            if(existingOrder){
+                console.log("Order already exists:", paymentIntent.id);
+                return res.json({received: true});
+            }
+
+            // Create order
+            const order = await Order.create({
+                user: userId,
+                clerkId,
+                orderItems: JSON.parse(orderItems),
+                shippingAddress: JSON.parse(shippingAddress),
+                paymentResult: {
+                    id: paymentIntent.id,
+                    status: paymentIntent.status,
+                },
+                totalPrice: parseFloat(totalPrice),
+            });
+
+            // Update product stock
+            const items = JSON.parse(orderItems);
+            for(const item of items){
+                await Product.findByIdAndUpdate(item.product, {
+                    $inc: {stock: -item.quantity},
+                });
+            }
+
+            console.log("Order created successfully:", order._id);
+        }catch(error){
+            console.error("Error creating order from webhook:", error);
+        }
+    }
+
+    res.json({received: true});
+} 
