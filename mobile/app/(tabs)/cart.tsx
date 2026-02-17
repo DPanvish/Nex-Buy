@@ -22,7 +22,7 @@ const EmptyUI = () => {
       </View>
       <View className="items-center justify-center flex-1 px-6">
         <Ionicons name="cart-outline" size={80} color="#666" />
-        <Text className="mt-4 text-xl font-semibold text-text-primary">Your cart is empty</Text>
+        <Text className="mt-4 text-xl font-semibold text-text-primary">Cart is empty</Text>
         <Text className="mt-2 text-center text-text-secondary">Add some products to get started</Text>
       </View>
     </View>
