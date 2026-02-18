@@ -53,21 +53,24 @@ export const createReview = async (req, res) => {
                 message: "Product not found in order"
             });
         }
+        
+        let review;
 
         const existingReview = await Review.findOne({ productId, userId: user._id });
         if(existingReview){
-            return res.status(400).json({
-                success: false,
-                message: "Review already exists"
+            // Update the existing review
+            existingReview.rating = rating;
+            existingReview.orderId = orderId;
+            review = await existingReview.save();
+        }else{
+            // create new review
+            review = await Review.create({
+                productId,
+                orderId,
+                userId: user._id,
+                rating
             });
         }
-
-        const review = await Review.create({
-            productId,
-            orderId,
-            userId: user._id,
-            rating
-        });
 
         // update this product rating
         const reviews = await Review.find({ productId });
