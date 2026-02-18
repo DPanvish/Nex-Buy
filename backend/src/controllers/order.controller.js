@@ -2,7 +2,7 @@ import { Product } from "../models/product.model.js";
 import { Order } from "../models/order.model.js";
 import { Review } from "../models/review.model.js";
 
-
+// Create order will be called by the stripe webhook (we dont call it externally)
 export const createOrder = async (req, res) => {
     try {
         const user = req.user;

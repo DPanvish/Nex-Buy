@@ -58,7 +58,7 @@ const OrdersScreen = () => {
     try{
       await Promise.all(
         selectedOrder.orderItems.map((item) => {
-          createReviewAsync({
+          return createReviewAsync({
             productId: item.product._id,
             orderId: selectedOrder._id,
             rating: productRatings[item.product._id],
@@ -144,7 +144,7 @@ const OrdersScreen = () => {
                     </Text>
                   ))}
 
-                  <View className="border-1 border-background-lighter pt-3 flex-row justify-between items-center">
+                  <View className="border-t border-background-lighter pt-3 flex-row justify-between items-center">
                     <View>
                       <Text className="text-text-secondary text-xs mb-1">{totalItems} items</Text>
                       <Text className="text-primary font-bold text-xl">${order.totalPrice.toFixed(2)}</Text>
