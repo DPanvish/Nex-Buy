@@ -156,3 +156,19 @@ export interface AddressSelectionModalProps {
   onProceed: (address: Address) => void;
   isProcessing: boolean;
 }
+
+export interface CreateReviewData {
+  productId: string;
+  orderId: string;
+  rating: number;
+}
+
+export interface RatingModalProps {
+  visible: boolean;
+  onClose: () => void;
+  order: Order | null;
+  productRatings: { [key: string]: number };
+  onRatingChange: (productId: string, rating: number) => void;
+  onSubmit: () => void;
+  isSubmitting: boolean;
+}

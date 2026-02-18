@@ -53,21 +53,13 @@ export const createReview = async (req, res) => {
                 message: "Product not found in order"
             });
         }
-
-        const existingReview = await Review.findOne({ productId, userId: user._id });
-        if(existingReview){
-            return res.status(400).json({
-                success: false,
-                message: "Review already exists"
-            });
-        }
-
-        const review = await Review.create({
-            productId,
-            orderId,
-            userId: user._id,
-            rating
-        });
+        
+        const isNew = !(await Review.exists({ productId, userId: user._id }));
+        const review = await Review.findOneAndUpdate(
+            { productId, userId: user._id },
+            { $set: { rating, orderId } },
+            { upsert: true, new: true, setDefaultsOnInsert: true, runValidators: true }
+        );
 
         // update this product rating
         const reviews = await Review.find({ productId });
@@ -85,16 +77,18 @@ export const createReview = async (req, res) => {
         );
 
         if(!updatedProduct){
-            await Review.findByIdAndDelete(review._id);
+            if(isNew){
+                await Review.findByIdAndDelete(review._id);
+            }
             return res.status(404).json({
                 success: false,
                 message: "Product not found"
             });
         }
         
-        res.status(201).json({
+        res.status(isNew ? 201 : 200).json({
             success: true,
-            message: "Review created successfully",
+            message: isNew ? "Review created successfully" : "Review updated successfully",
             review
         });
     }catch (error) {
