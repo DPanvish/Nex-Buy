@@ -5,12 +5,17 @@ import { Ionicons } from '@expo/vector-icons'
 import { CATEGORIES } from '@/lib/utils'
 import ProductsGrid from '@/components/ProductsGrid'
 import useProducts from '@/hooks/useProducts'
+import { router } from 'expo-router'
 
 const HomeScreen = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const {data: products, isLoading, isError} = useProducts();
+
+  const handlePress = () => {
+    return router.push("/(profile)/privacy-security");
+  }
 
   const filteredProducts = useMemo(() => {
     if(!products){
@@ -52,6 +57,7 @@ const HomeScreen = () => {
 
             <TouchableOpacity 
               className="p-3 rounded-full bg-surface/50"
+              onPress={handlePress}
               activeOpacity={0.7}
             >
               <Ionicons name="options-outline" size={22} color={"#fff"} />

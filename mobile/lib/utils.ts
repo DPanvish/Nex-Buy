@@ -29,7 +29,7 @@ export const MENU_ITEMS = [
         icon: "person-outline",
         title: "Edit Profile",
         color: "#3B82F6",
-        action: "/profile",
+        action: "/edit-profile",
     },
     {
         id: 2,
