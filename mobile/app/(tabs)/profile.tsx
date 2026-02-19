@@ -12,9 +12,6 @@ const ProfileScreen = () => {
   const {user} = useUser();
 
   const handleMenuPress = (action: (typeof MENU_ITEMS)[number]["action"]) => {
-    if(action === "/profile"){
-      return;
-    }
     router.push(action);
   }
 
@@ -53,6 +50,13 @@ const ProfileScreen = () => {
                   {user?.emailAddresses?.[0]?.emailAddress || "No email"}
                 </Text>
               </View>
+
+              <TouchableOpacity 
+                onPress={() => router.push("/edit-profile")}
+                className="items-center justify-center w-10 h-10 rounded-full bg-white/10"
+              >
+                <Ionicons name="create-outline" size={20} color="#fff" />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
