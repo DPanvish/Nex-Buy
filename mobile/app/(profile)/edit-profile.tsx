@@ -4,23 +4,12 @@ import SafeScreen from '@/components/SafeScreen'
 import { useUser } from '@clerk/clerk-expo'
 import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 
 const EditProfileScreen = () => {
   const { user, isLoaded } = useUser();
   const [firstName, setFirstName] = useState(user?.firstName || "");
   const [lastName, setLastName] = useState(user?.lastName || "");
-  const queryClient = useQueryClient();
-
-  if (!isLoaded) {
-    return (
-      <SafeScreen>
-        <View className="items-center justify-center flex-1">
-          <ActivityIndicator size="large" color="#ff9300" />
-        </View>
-      </SafeScreen>
-    );
-  }
 
   const editProfileMutation = useMutation({
     mutationFn: async() => {
@@ -37,7 +26,7 @@ const EditProfileScreen = () => {
       console.error("Profile update error:", error);
       Alert.alert("Error", error.errors?.[0]?.message || "Failed to update profile.");
     }
-  })
+  });
 
   const handleSave = () => {
     if (!firstName.trim() || !lastName.trim()) {
@@ -46,6 +35,17 @@ const EditProfileScreen = () => {
     }
     editProfileMutation.mutate();
   };
+
+
+  if (!isLoaded) {
+    return (
+      <SafeScreen>
+        <View className="items-center justify-center flex-1">
+          <ActivityIndicator size="large" color="#ff9300" />
+        </View>
+      </SafeScreen>
+    );
+  }
 
   return (
     <SafeScreen>
