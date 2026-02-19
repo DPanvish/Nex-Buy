@@ -11,6 +11,8 @@ const OrdersPage = () => {
     queryFn: orderApi.getAll,
   });
 
+  const orders = ordersData?.orders || [];
+
   const updateStatusMutation = useMutation({
     mutationFn: orderApi.updateStatus,
     onSuccess: () => {
@@ -40,7 +42,7 @@ const OrdersPage = () => {
             <div className="flex justify-center py-12">
               <span className="loading loading-spinner loading-lg" />
             </div>
-          ) : !ordersData?.length ? (
+          ) : !orders.length ? (
             <div className="text-center py-12 text-base-content/60">
               <p className="text-xl font-semibold mb-2">No orders yet</p>
               <p className="text-sm">Orders will appear here once customers make purchases.</p>
@@ -60,7 +62,7 @@ const OrdersPage = () => {
                 </thead>
 
                 <tbody>
-                  {ordersData.map(order => {
+                  {orders.map(order => {
                     const totalQuantity = order.orderItems.reduce((total, item) => total + item.quantity, 0);
 
                     return (
